@@ -8,7 +8,7 @@ This repository contains coding examples primarily in Python and SQL. Each examp
 
 ## Python Examples
 
-In the `Python` directory, you will find examples ranging from basic syntax and data structures to more advanced topics like algorithms and popular libraries such as Pandas, NumPy, and Matplotlib.
+In the `Python` directory, you will find examples ranging from basic syntax and data structures to more advanced topics like algorithms and popular libraries such as Pandas, NumPy, and Matplotlib. I've included different solutions to the same problem as well.
 
 ### Examples:
 
