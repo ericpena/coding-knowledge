@@ -175,3 +175,28 @@ print(numbers[5:])       # Output: [5, 6, 7, 8, 9]
 print(numbers[::2])      # Output: [0, 2, 4, 6, 8]
 print(numbers[::-1])     # Output: [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
 ```
+
+---
+11. Explain the use of *args and **kwargs in function definitions.
+Answer:
+
+*args: Allows a function to accept a variable number of positional arguments. It collects additional positional arguments as a tuple.
+
+```python
+def func(*args):
+    for arg in args:
+        print(arg)
+
+func(1, 2, 3)  # Output: 1 2 3
+```
+
+**kwargs: Allows a function to accept a variable number of keyword arguments. It collects additional keyword arguments as a dictionary.
+
+```python
+def func(**kwargs):
+    for key, value in kwargs.items():
+        print(f"{key} = {value}")
+
+func(a=1, b=2, c=3)  # Output: a = 1 b = 2 c = 3
+```
+
