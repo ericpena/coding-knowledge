@@ -200,3 +200,11 @@ def func(**kwargs):
 func(a=1, b=2, c=3)  # Output: a = 1 b = 2 c = 3
 ```
 
+---
+12. Can an abstract class be instantiated?
+Answer:
+
+No, an abstract class in Python cannot be instantiated even if it contains no abstract methods. The primary purpose of an abstract class is to serve as a base class that provides a common interface and possibly some common functionality for its subclasses. The abstract class itself is not meant to be instantiated directly.
+
+In Python, the ABC class from the abc module is used to create abstract classes. Once a class inherits from ABC, it is considered an abstract class and cannot be instantiated, regardless of whether it has any abstract methods.
+
