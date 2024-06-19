@@ -306,6 +306,23 @@ This class takes three arguments representing the space coordinates of a given p
 
 The call to list() iterates over the attributes .x, .y, and .z, returning a list object. You don’t need to call .__iter__() directly. Python calls it automatically when you use an instance of ThreeDPoint in an iteration.
 
+#### `__eq__:`
+```python
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+    
+    def __eq__(self, other):
+        return self.name == other.name and self.age == other.age
+    
+x = Person('Mike', 25)
+y = Person('Sarah', 27)
+z = Person('Mike', 25)
+
+print(x==z)
+```
+
 #### `@classmethod`
 ```python
 # point.py
@@ -326,6 +343,39 @@ class ThreeDPoint:
     def __repr__(self):
         return f"{type(self).__name__}({self.x}, {self.y}, {self.z})"
 ```
+
+#### Another example of how to use `@classmethod`
+
+```python
+class Deck:
+    def __init__(self, cards):
+        self.cards = cards
+
+    @classmethod
+    def create(cls, shuffle=False):
+        """Create a new deck of 52 cards"""
+        cards = [Card(s, r) for r in Card.RANKS for s in Card.SUITS]
+        if shuffle:
+            random.shuffle(cards)
+        return cls(cards)
+
+    def deal(self, num_hands):
+        """Deal the cards in the deck into a number of hands"""
+        cls = self.__class__
+        return tuple(cls(self.cards[i::num_hands]) for i in range(num_hands))
+
+# ...
+
+class Game:
+    def __init__(self, *names):
+        """Set up the deck and deal cards to 4 players"""
+        deck = Deck.create(shuffle=True)
+        self.names = (list(names) + "P1 P2 P3 P4".split())[:4]
+        self.hands = {
+            n: Player(n, h) for n, h in zip(self.names, deck.deal(4))
+        }
+```
+
 In the .from_sequence() class method, you take a sequence of coordinates as an argument, create a ThreeDPoint object from it, and return the object to the caller. To create the new object, you use the cls argument, which holds an implicit reference to the current class, which Python injects into your method automatically.
 
 #### `@staticmethod`
@@ -499,3 +549,164 @@ print("\nAll vehicles after removing VIN 1HGCM82633A004352:")
 for info in inventory.list_vehicles():
     print(info)
 ```
+
+# Practice Problem: Autonomous Vehicle Fleet Management System
+
+You are tasked with designing a fleet management system for an autonomous vehicle company. The system should be able to:
+
+1. **Add new vehicles to the fleet.**
+2. **Assign tasks to vehicles.**
+3. **Track the status of each vehicle and its tasks.**
+4. **Generate reports on the fleet's performance.
+
+## Requirements
+
+### Vehicle Class
+Create a base class `Vehicle` with the following attributes:
+- `vin`: A unique identifier for the vehicle.
+- `make`: The manufacturer of the vehicle.
+- `model`: The model of the vehicle.
+- `year`: The year the vehicle was manufactured.
+- `status`: The current status of the vehicle (e.g., "idle", "in transit", "maintenance").
+- `tasks`: A list of tasks assigned to the vehicle.
+
+The `Vehicle` class should have methods to:
+- `assign_task(task)`: Assign a new task to the vehicle.
+- `complete_task()`: Mark the current task as completed and update the status.
+- `get_info()`: Return a string containing the vehicle's details.
+
+### Task Class
+Create a `Task` class with the following attributes:
+- `task_id`: A unique identifier for the task.
+- `description`: A description of the task.
+- `origin`: The starting location of the task.
+- `destination`: The ending location of the task.
+- `status`: The current status of the task (e.g., "pending", "in progress", "completed").
+
+### Fleet Class
+Create a `Fleet` class to manage the fleet of vehicles with the following methods:
+- `add_vehicle(vehicle)`: Add a new vehicle to the fleet.
+- `remove_vehicle(vin)`: Remove a vehicle from the fleet by its VIN.
+- `assign_task_to_vehicle(task, vin)`: Assign a task to a specific vehicle by its VIN.
+- `complete_vehicle_task(vin)`: Mark the current task of a specific vehicle as completed.
+- `get_fleet_status()`: Generate a report on the status of all vehicles and their tasks.
+
+## Example Usage
+
+```python
+class Task:
+    def __init__(self, task_id, description, origin, destination):
+        self.task_id = task_id
+        self.description = description
+        self.origin = origin
+        self.destination = destination
+        self.status = "pending"
+
+    def __str__(self):
+        return f"Task ID: {self.task_id}, Description: {self.description}, Origin: {self.origin}, Destination: {self.destination}, Status: {self.status}"
+
+class Vehicle:
+    def __init__(self, vin, make, model, year):
+        self.vin = vin
+        self.make = make
+        self.model = model
+        self.year = year
+        self.status = "idle"
+        self.tasks = []
+
+    def assign_task(self, task):
+        self.tasks.append(task)
+        self.status = "in transit"
+        task.status = "in progress"
+
+    def complete_task(self):
+        if self.tasks:
+            current_task = self.tasks.pop(0)
+            current_task.status = "completed"
+            self.status = "idle" if not self.tasks else "in transit"
+
+    def get_info(self):
+        return f"VIN: {self.vin}, Make: {self.make}, Model: {self.model}, Year: {self.year}, Status: {self.status}, Tasks: {[str(task) for task in self.tasks]}"
+
+class Fleet:
+    def __init__(self):
+        self.vehicles = {}
+
+    def add_vehicle(self, vehicle):
+        self.vehicles[vehicle.vin] = vehicle
+
+    def remove_vehicle(self, vin):
+        if vin in self.vehicles:
+            del self.vehicles[vin]
+
+    def assign_task_to_vehicle(self, task, vin):
+        if vin in self.vehicles:
+            self.vehicles[vin].assign_task(task)
+
+    def complete_vehicle_task(self, vin):
+        if vin in self.vehicles:
+            self.vehicles[vin].complete_task()
+
+    def get_fleet_status(self):
+        report = []
+        for vin, vehicle in self.vehicles.items():
+            report.append(vehicle.get_info())
+        return "\n".join(report)
+
+# Example usage
+fleet = Fleet()
+
+# Adding vehicles
+vehicle1 = Vehicle('1HGCM82633A004352', 'Tesla', 'Model S', 2022)
+vehicle2 = Vehicle('1FTFW1E57JFA30456', 'Waymo', 'Chrysler Pacifica', 2021)
+
+fleet.add_vehicle(vehicle1)
+fleet.add_vehicle(vehicle2)
+
+# Creating tasks
+task1 = Task(1, "Deliver package", "Location A", "Location B")
+task2 = Task(2, "Pick up passenger", "Location C", "Location D")
+
+# Assigning tasks to vehicles
+fleet.assign_task_to_vehicle(task1, '1HGCM82633A004352')
+fleet.assign_task_to_vehicle(task2, '1FTFW1E57JFA30456')
+
+# Completing a task
+fleet.complete_vehicle_task('1HGCM82633A004352')
+
+# Generating fleet status report
+print(fleet.get_fleet_status())
+```
+
+# Trivia Questions
+
+* What is the difference between inheritance and composition in object-oriented programming, and when should you prefer one over the other?
+    * Answer: Inheritance and composition are two fundamental concepts in object-oriented programming that are used to build relationships between classes.
+    * Inheritance is a mechanism where a new class (called a subclass) derives from an existing class (called a superclass). The subclass inherits the attributes and methods of the superclass, allowing for code reuse and the creation of a hierarchical relationship between classes. Inheritance is often described as an "is-a" relationship. For example, a `Car` class might inherit from a `Vehicle` class because a car is a type of vehicle.
+    * Composition is a mechanism where a class is composed of one or more objects from other classes. This allows for a "has-a" relationship, where a class contains instances of other classes as attributes. Composition is preferred when you want to build complex types by combining objects and when you want to avoid the rigidity of inheritance hierarchies. For example, a `Car` class might have an `Engine` object because a car has an engine.
+    * When to prefer one over the other:
+        * Use inheritance when there is a clear hierarchical relationship and when the subclass can naturally extend the behavior of the superclass.
+        Use composition when you want to create complex objects from simpler ones and when you want to design flexible systems where components can be easily replaced or changed.
+
+
+---
+* What are abstract classes and interfaces in object-oriented programming, and how do they differ?
+    * An abstract class is a class that cannot be instantiated on its own and is meant to be subclassed. It can include both abstract methods (methods without implementation) and concrete methods (methods with implementation). Abstract methods defined in an abstract class must be implemented by its subclasses. Abstract classes are used when you want to provide some common functionality along with a set of methods that subclasses are required to implement.
+    * In some programming languages, an interface is a type that only declares methods (no implementation). All methods in an interface are abstract by default. Interfaces specify what methods a class must implement but do not provide any code for those methods. In Python, interfaces are often represented using abstract base classes with only abstract methods, similar to how interfaces work in languages like Java.
+    * Key Differences:
+        * Implementation: Abstract classes can have both abstract and concrete methods, while interfaces typically only have abstract methods.
+        Multiple Inheritance: A class can implement multiple interfaces, allowing for multiple inheritance of types. However, a class can only inherit from one abstract class (in languages that do not support multiple inheritance).
+        Usage: Use abstract classes when you need to share common code among multiple related classes. Use interfaces when you want to specify a contract for classes without dictating any common implementation.
+
+---
+* What is polymorphism in object-oriented programming, and how is it implemented in Python?
+    * Polymorphism is a fundamental concept in object-oriented programming that allows objects of different classes to be treated as objects of a common superclass. It enables a single interface to represent different underlying data types and methods, which can lead to more flexible and reusable code.
+    * Polymorphism can be achieved in two main ways:
+        * Method Overriding: Subclasses provide specific implementations of methods that are defined in their superclass.
+        Method Overloading: Multiple methods with the same name but different parameters (not natively supported in Python but can be simulated).
+    * In Python, polymorphism is typically implemented through method overriding and the use of interfaces (abstract base classes).
+
+---
+
+
+

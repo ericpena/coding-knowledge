@@ -208,6 +208,172 @@ No, an abstract class in Python cannot be instantiated even if it contains no ab
 
 In Python, the ABC class from the abc module is used to create abstract classes. Once a class inherits from ABC, it is considered an abstract class and cannot be instantiated, regardless of whether it has any abstract methods.
 
+---
+13. Explain `if __name__ == "__main__":`
+
+`__name__`
+
+* In Python, `__name__` is a special built-in variable that gets assigned a string value based on how the script is being executed. The value of `__name__` will be:
+* `"__main__"` if the script is being run directly.
+The name of the module if the script is being imported.
+
+`if __name__ == "__main__"`:
+
+* This line of code checks if the script is being run directly (i.e., not imported as a module). If the condition is true, the block of code under this statement will be executed.
+
+* Why Use It?
+	* Modularity: It allows you to write code that can be reused as a module without running certain parts of the code. For example, you can define functions and classes in a script and test them in the same script without executing the test code when the script is imported elsewhere.
+	* Testing: It is often used to include test code or demo code that should only run when the script is executed directly, and not when it is imported.
+
+14. What is Polymorphism? (Static vs. Dynamic Polymorphism)
+Types of Polymorphism
+* **Compile-time Polymorphism (Static Polymorphism) - Overloading**: (In the same class) Achieved through method overloading (same method name with different parameters) and operator overloading (same operator with different meanings). Python does not support method overloading directly but supports operator overloading.
+* **Run-time Polymorphism (Dynamic Polymorphism) - Overriding**: (In different classes) Achieved through method overriding, where a subclass provides a specific implementation of a method that is already defined in its superclass.
+
+Method Overriding (Run-time Polymorphism)
+
+In this example, we have a base class Animal with a method make_sound. Two subclasses, Dog and Cat, override the make_sound method.
+```python
+class Animal:
+    def make_sound(self):
+        raise NotImplementedError("Subclass must implement abstract method")
+
+class Dog(Animal):
+    def make_sound(self):
+        return "Bark"
+
+class Cat(Animal):
+    def make_sound(self):
+        return "Meow"
+
+def animal_sound(animal: Animal):
+    print(animal.make_sound())
+
+# Create instances
+dog = Dog()
+cat = Cat()
+
+# Demonstrate polymorphism
+animal_sound(dog)  # Output: Bark
+animal_sound(cat)  # Output: Meow
+```
+
+---
+15. What is overloading?
+In Python, overloading refers to the ability to define multiple methods with the same name but different implementations. There are two main types of overloading in programming: method overloading and operator overloading.
+
+**Method Overloading**
+* Python does not support traditional method overloading directly, as seen in statically-typed languages like Java or C++. Instead, Python handles method calls based on the number and types of arguments passed. You can achieve a similar effect using default arguments or by manually checking the arguments inside the method.
+
+**Operator Overloading**
+* Operator overloading allows you to define the behavior of operators (such as `+`, `-`, `*`, etc.) for your custom objects. This is done by defining special methods in your class.
+
+Common Special Methods for Operator Overloading:
+* `__add__(self, other)` for `+`
+* `__sub__(self, other)` for `-`
+* `__mul__(self, other)` for `*`
+* `__truediv__(self, other)` for `/`
+* `__eq__(self, other)` for `==`
+* `__lt__(self, other)` for `<`
+* `__le__(self, other)` for `<=`
+
+---
+16. What does the `@property` decorator do?
+The @property decorator in Python is used to define methods in a class that can be accessed like attributes. It allows you to define a method and then access it as if it were a simple attribute, which makes the code cleaner and more intuitive. This is especially useful for encapsulation and managing the access to instance variables.
+
+```python
+class Employee:
+    def __init__(self, first_name, last_name):
+        self._first_name = first_name
+        self._last_name = last_name
+
+    @property
+    def full_name(self):
+        return f"{self._first_name} {self._last_name}"
+
+    @full_name.setter
+    def full_name(self, name):
+        first_name, last_name = name.split(" ")
+        self._first_name = first_name
+        self._last_name = last_name
+
+    @full_name.deleter
+    def full_name(self):
+        self._first_name = None
+        self._last_name = None
+
+# Create an Employee instance
+emp = Employee("John", "Doe")
+
+# Access the full_name property
+print(emp.full_name)  # Output: John Doe
+
+# Set the full_name property
+emp.full_name = "Jane Smith"
+print(emp.full_name)  # Output: Jane Smith
+
+# Delete the full_name property
+del emp.full_name
+print(emp.full_name)  # Output: None None
+```
+
+---
+15. How do you make attribution or method private?
+```python
+class MyClass:
+    def __init__(self, public_value, private_value):
+        self.public_value = public_value
+        self.__private_value = private_value
+
+    def get_private_value(self):
+        return self.__private_value
+
+# Create an instance
+obj = MyClass(10, 20)
+
+# Access public attribute
+print(obj.public_value)  # Output: 10
+
+# Access private attribute directly (will raise AttributeError)
+# print(obj.__private_value)  # Uncommenting this line will raise an AttributeError
+
+# Access private attribute through a method
+print(obj.get_private_value())  # Output: 20
+```
+
+---
+17. What is a metaclass?
+
+In Python, a metaclass is a class of a class that defines how a class behaves. Just as a class defines how instances of the class behave, a metaclass defines how classes behave. Classes themselves are instances of metaclasses.
+
+Metaclasses are a powerful and advanced feature of Python's object-oriented programming, providing a way to customize class creation and behavior.
+
+**Basics of Metaclasses**:
+1. Class Creation: When a class is created, Python looks for a __metaclass__ attribute. If it’s not found, it defaults to type, which is the built-in metaclass. The metaclass controls how the class is created and initialized.
+2. Customizing Class Creation: By defining a custom metaclass, you can control the creation, initialization, and even the inheritance of classes.
+
+```python
+# Define a metaclass
+class MyMeta(type):
+    def __new__(cls, name, bases, dct):
+        print(f"Creating class {name}")
+        cls_obj = super().__new__(cls, name, bases, dct)
+        return cls_obj
+
+# Define a class using the metaclass
+class MyClass(metaclass=MyMeta):
+    def __init__(self, value):
+        self.value = value
+
+    def show_value(self):
+        print(self.value)
+
+# Create an instance of MyClass
+obj = MyClass(42)
+obj.show_value()
+```
+
+
 # Quiz Assessment
 
 **References:**
