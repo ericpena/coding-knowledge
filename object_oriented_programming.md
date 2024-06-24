@@ -678,6 +678,35 @@ fleet.complete_vehicle_task('1HGCM82633A004352')
 print(fleet.get_fleet_status())
 ```
 
+# Practice Problem: Airline Ticketing System Design
+
+Design an airline ticketing system using object-oriented principles. The system should handle flight scheduling, booking, ticket pricing, and passenger management.
+
+## Requirements
+
+### Classes
+- `Airline`
+- `Flight`
+- `Ticket`
+- `Passenger`
+- `Booking`
+
+### Features
+- Schedule flights with departure and arrival times, and capacity.
+- Book tickets for flights, ensuring no overbooking.
+- Calculate ticket prices based on factors like seat type and booking time.
+- Manage passenger information and bookings.
+
+## Considerations
+- Encapsulation and abstraction for handling complex operations.
+- Use inheritance for different types of flights (e.g., domestic, international).
+- Implement polymorphism for ticket pricing strategies (e.g., economy, business).
+
+## Implementation
+
+Implement this system in Python using classes and appropriate methods. This exercise will help you solidify your understanding of OOP concepts and prepare for similar interview questions.
+
+
 # Trivia Questions
 
 * What is the difference between inheritance and composition in object-oriented programming, and when should you prefer one over the other?
@@ -709,4 +738,43 @@ print(fleet.get_fleet_status())
 ---
 
 
+# Design Patterns
+
+## Singleton
+When an object can only be instantiated once
+
+## Prototype (Clone)
+Another way to have inheritance
+
+## Builder
+Create an object and let methods add values to the attributes instead of all at once
+
+## Facade
+Simplified API that the end user doesn't have to see
+
+## Proxy
+Substitute. 
+
+# 5 Design Pattern
+1. Strategy Pattern
+    * sounds like polymorphism
+2. decorator pattern
+    * open to extension / closed to modification
+    * wrap a class into another class
+3. Observer Pattern
+    * notify interested party that something has happened
+4. Singleton Pattern
+    * Single object and make sure there's a single object
+5. Facade Pattern
+    * Different libraries and frameworks
+
+**Others**:
+
+1. Model-View-Controller (MVC): The MVC pattern is used for designing user interfaces. It separates the application into three distinct components: the model (data layer), the view (UI layer), and the controller (business logic). This separation of concerns makes it easier to maintain the application and make changes as needed.
+2. Singleton: The singleton pattern is used when you need to have only one instance of a class in an application. This ensures that all parts of the application use the same instance of the class and prevents multiple instances from being created.
+3. Observer: The observer pattern is used to allow objects to observe other objects and be notified of any changes in their state. This is useful for maintaining consistency across an application or for building event-driven systems.
+4. Factory: The factory pattern is used for creating objects. It allows the application to delegate object creation to a separate class and makes it easier to maintain the code by hiding implementation details from the client code.
+5. Adapter: The adapter pattern is used for converting one interface into another. This allows existing classes with incompatible interfaces to work together without having to rewrite existing code.
+6. Strategy: The strategy pattern is used for selecting algorithms at runtime. It is useful for creating extensible applications that can easily switch between different algorithms or behaviors.
+7. Command: The command pattern is used for encapsulating actions as objects. This makes it easier to undo, redo, and log actions in an application.
 
